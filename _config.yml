@@ -12,7 +12,7 @@
 
 theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "air" #"default", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-GB"
@@ -109,7 +109,7 @@ analytics:
 author:
   name             : "Samuel Martin Frias"
   avatar           : "/assets/images/asdf.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Final year Bioengineering student at Imperial College London"
+  bio              : "Final year student at Imperial College London with iterest in mathematical modelling"
   location         : "London, GB"
   email            : "samumartinfrias@gmail.com"
   links:
