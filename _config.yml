@@ -12,20 +12,20 @@
 
 theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "air" #"default", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "neon" #"air", "default", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-GB"
 title                    : "Samuel Martin Frias"
 title_separator          : "|"
-subtitle                 : # site tagline that appears below site title in masthead
+subtitle                 : "Imperial College student with an interest in mathematical modelling"
 name                     : "Samuel MF"
 description              : "Personal website"
 url                      : "https://samumartinf.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "samumartinf/samumartinf.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
-teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
-logo                     : # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
+teaser                   : "/assets/images/backgroundish.jpg"
+logo                     : "/assets/images/asdf.jpg"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
