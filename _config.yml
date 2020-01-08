@@ -19,7 +19,7 @@ locale                   : "en-GB"
 title                    : "Samuel Martin Frias"
 title_separator          : "|"
 subtitle                 : "Imperial College student with an interest in mathematical modelling"
-name                     : "Samuel MF"
+name                     : "Samuel Martin Frias"
 description              : "Personal website"
 url                      : "https://samumartinf.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
@@ -113,15 +113,15 @@ author:
   location         : "London, GB"
   email            : "samumartinfrias@gmail.com"
   links:
-    - label: "Email"
-      icon: "fas fa-fw fa-envelope-square"
-      url: mailto:samumartinfrias@email.com
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/samumartinf"
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/samumartinf"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/samuelmartinfrias/"
 
 # Site Footer
 footer:
@@ -132,6 +132,9 @@ footer:
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/samumartinf"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/samuelmartinfrias/"
 
 
 # Reading Files
@@ -201,7 +204,7 @@ sass:
 permalink: /:categories/:title/
 paginate: 5 # amount of posts to show
 paginate_path: /page:num/
-timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: 'GMT' # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 
 # Plugins (previously gems:)
@@ -268,6 +271,6 @@ defaults:
       layout: single
       author_profile: true
       read_time: true
-      comments: # true
+      comments: true
       share: true
       related: true
