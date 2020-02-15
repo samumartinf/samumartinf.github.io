@@ -6,7 +6,5 @@ main:
     url: /about/
   - title: "Sample Posts"
     url: /posts/
-  - title: "Test"
-    url: /Posts/
   # - title: "Sitemap"
   #   url: /sitemap/http://localhost:4000/year-archive/
