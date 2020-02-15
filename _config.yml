@@ -18,14 +18,14 @@ minimal_mistakes_skin    : "contrast" #"air", "default", "aqua", "contrast", "da
 locale                   : "en-GB"
 title                    : "Samuel Martin Frias"
 title_separator          : "|"
-subtitle                 : "Imperial College student with an interest in mathematical modelling"
+subtitle                 : "A personal website"
 name                     : "Samuel Martin Frias"
 description              : "Personal website"
 url                      : "https://samumartinf.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "samumartinf/samumartinf.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : "/assets/images/backgroundish.jpg"
-logo                     : "/assets/images/asdf.jpg"
+logo                     : "/assets/images/smf.svg"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -109,7 +109,7 @@ analytics:
 author:
   name             : "Samuel Martin Frias"
   avatar           : "/assets/images/asdf.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Final year student at Imperial College London with iterest in mathematical modelling"
+  bio              : "Final year ICL student with iterest in mathematical modelling, finance and healthcare"
   location         : "London, GB"
   email            : "samumartinfrias@gmail.com"
   links:
