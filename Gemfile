@@ -14,6 +14,7 @@ gem "github-pages", group: :jekyll_plugins
 # To upgrade, run `bundle update`.
 # gem "jekyll"
 gem "minimal-mistakes-jekyll"
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
 # The following plugins are automatically loaded by the theme-gem:
 #   gem "jekyll-paginate"
