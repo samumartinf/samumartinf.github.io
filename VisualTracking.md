@@ -1,5 +1,5 @@
 ---
-layout: posts
+layout: single
 title: A small simulation for BIOE97156
 author_profile: true
 permalink: /robot/
@@ -9,38 +9,53 @@ This is meant to be a short trial for the simulation of the tracking report for 
 
 
 <div id="sketch-holder"></div>
+<div id="buttons-holder"></div>
 
 Here is my implementation
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+<script src="https://raw.githubusercontent.com/processing/p5.js/1.0.0/src/dom/dom.js"></script>
+<script src="/assets/js/p5library/p5.clickable.js"></script>
+
 <script>
+let button;
 let robot;
 let prey;
 let obstacle;
-let w;
-let h;
+let canvas;
+let w = 800;
+let h = 600;
+var just_restarted = false;
 var setup_complete;
-var finished = false;
 var robot_setup = true;
 var prey_setup = false;
 var obstacle_setup = false;
 
 function setup() {
-  const canvas = createCanvas(800, 600);
+  canvas = createCanvas(w, h);
   canvas.parent('sketch-holder');
-  prey = new Prey();
-  obstacle = new Obstacle();
-  frameRate(30);
-  setup_complete = false;
-  
-  robot = new Robot(mouseX, mouseY);
-  robot.speed = 0;
+	resetSketch();
+
+	myButton = new Clickable();     //Create button
+	myButton.text = "Reset";
+	myButton.locate(w-90, 10);        //Position Button
+	myButton.width = 80;
+	myButton.height = 35;
+	myButton.onPress = function(){  //When myButton is pressed
+	  //this.color = "#AAAAFF";       //Change button color
+	  resetSketch();                //Show an alert message
+	}
 
 }
 
 function draw() {
   background(235);
-  
+  push();
+  myButton.draw();
+  pop();
+  //Display the button
+ 
+
   if(setup_complete == false){
     position_stuff();
   } else {
@@ -69,17 +84,31 @@ function draw() {
   
 }
 
+function resetSketch(){
+	robot_setup = true;
+	prey_setup = false;
+	obstacle_setup = false;
+	prey = new Prey();
+	obstacle = new Obstacle();
+	frameRate(30);
+	setup_complete = false;
+	just_restarted = true;
+
+	robot = new Robot(mouseX, mouseY);
+	robot.speed = 0;
+
+}
+
 function distance(x1, y1, x2, y2){
   deltaX = x2 - x1;
   deltaY = y2 - y1;
-  dist = sqrt(deltaX*deltaX + deltaY*deltaY);
+  var dist = sqrt(deltaX*deltaX + deltaY*deltaY);
   return dist;
 }
 
 function getAngle(){
   
   push();
-  print('Robot angle: ' + robot.angle/PI*180);
   translate(robot.xpos, robot.ypos);
   rotate(robot.angle);
   translate(0, robot.len/2 + 10);
@@ -101,7 +130,6 @@ function getAngle(){
   } else if (angle_diff < -PI){
     angle_diff = 2*PI + angle_diff;
   }
-  print('Angle diff prey: ' + angle_diff*180/PI);
   pop();
   return angle_diff;
 }
@@ -125,7 +153,6 @@ function getObstacleAngle(){
   } else if (angle_diff < -PI){
     angle_diff = 2*PI + angle_diff;
   }
-  print('Angle diff obstacle: ' + angle_diff*180/PI);
   pop();
   return angle_diff;
 }
@@ -138,7 +165,7 @@ function preyLocation(){
 function getDistance(object){
   deltaX = object.xpos - robot.xpos;
   deltaY = object.ypos - robot.ypos;
-  dist = sqrt(deltaX*deltaX + deltaY*deltaY);
+  var dist = sqrt(deltaX*deltaX + deltaY*deltaY);
   return dist;
 }
 
@@ -174,9 +201,11 @@ function position_stuff(){
 
 function mouseReleased(){
 	if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
-		if (robot_setup){
-	    text('Place robot by clicking with the mouse', 10, 30);
-	    print('robot placed');
+		if (just_restarted){
+			just_restarted = false;
+		}
+		else if (robot_setup){
+	    //text('Place robot by clicking with the mouse', 10, 30);
 	    robot_setup = false;
 	    prey_setup = true; 
 	    prey = new Prey(mouseX, mouseY);
@@ -184,7 +213,7 @@ function mouseReleased(){
 	  } 
 
 	  else if(prey_setup){
-	    text('Place prey by clicking with the mouse', 10, 30);
+	    //text('Place prey by clicking with the mouse', 10, 30);
 	    
 	    prey_setup = false;
 	    obstacle_setup = true;
@@ -195,7 +224,7 @@ function mouseReleased(){
 	    prey.show();
 	    robot.show();
 	    
-	    text('Place obstacle by clicking with the mouse', 10, 30);
+	    //text('Place obstacle by clicking with the mouse', 10, 30);
 	    obstacle_setup = false;
 	    setup_complete = true;
 	    prey.xspeed = 1.5;
@@ -281,7 +310,7 @@ class Prey{
 class Robot{
   
   constructor(xpos, ypos){
-   this.controller = new PID_controller(0.05, 0.0, 0.0);
+   this.controller = new PID_controller(0.08, 0.0, 0.0);
    this.angle = 0;
    this.wid = 30;
    this.len = 40;
@@ -314,11 +343,11 @@ class Robot{
   update(targetAngle, obstacleAngle, obstacleDist){
     if(obstacleDist < this.thresholdDist && abs(obstacleAngle) < (this.thresholdDist/(obstacleDist + 30) * PI/6)){
       var w1 = (this.thresholdDist)/(this.thresholdDist + (this.thresholdDist-obstacleDist));
-      var w2 = (obstacleDist)/(this.thresholdDist + (this.thresholdDist-obstacleDist));
-      w1 = (PI/6)/(obstacleAngle + PI/6);
-      w2 = obstacleAngle/(PI/6 + obstacleAngle);
-      print('w1 : ' + w1);
-      print('w2 : ' + w2);
+      var w2 = (this.thresholdDist - obstacleDist)/(this.thresholdDist + (this.thresholdDist-obstacleDist));
+
+      //w1 = (PI/6)/(abs(obstacleAngle) + PI/6);
+     // w2 = abs(obstacleAngle)/(PI/6 + abs(obstacleAngle));
+      
       if(obstacleAngle < 0){
         obstacleAngle = -10 + obstacleAngle;
       } else if (obstacleAngle >= 0){
