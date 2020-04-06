@@ -5,7 +5,7 @@ author_profile: true
 permalink: /about/
 ---
 
-I am an engineering student with a soft spot for Mathematical Modelling, Finance, reading other boring stuff. Currently living in London and soon to graduate from Imperial College London in June 2020 with an MEng in Biomedical Engineering. 
+I am an engineering student with a soft spot for Mathematical Modelling, Finance, programming and other boring stuff. Currently living in London and soon to graduate from Imperial College London in June 2020 with an MEng in Biomedical Engineering. 
 
 Here some of my proudest work while in uni:
 * Co-founding the [Algorithmic Trading Society](https://www.algosoc.com) currently the biggest academic society in Imperial College with 600+ students

@@ -1,64 +1,136 @@
 ---
 layout: single
-title: A small simulation for BIOE97156
+title: An interactive simulation for BIOE97156
 author_profile: true
 permalink: /robot/
 ---
 
-This is meant to be a short trial for the simulation of the tracking report for the Imperial College module on Animal Locomotion and Bioinspired Robotics.
+This is meant to be an axiliary short explanation and discussion about target interception for Imperial College's module on Animal Locomotion and Bioinspired Robotics (ALBiR).
 
+## The Simulation
+Like in periodism, I will take the inverted pyramid approach for this writing. Let's start straight away with the more interesting and fun stuff, here is a simulation of a robot catching stuff.
 
 <div id="sketch-holder"></div>
-<div id="buttons-holder"></div>
 
-Here is my implementation
+## Problem Specification
+During the spring term of 2020 in ALBiR we have studied the different ways locomotion and environment perception and interaction works in the animal kingdom. From biped motion, to visual recognition and targer pursuit, we have explored Nature's solution for these problem. ~~Copying Nature~~ Inspired by Nature we were expected to take what we had learnt and take it to the real world. A small robot was built using two servo motors, a Raspberry Pi and a Pixy2 camera. 
+
 
 <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
 <script src="https://raw.githubusercontent.com/processing/p5.js/1.0.0/src/dom/dom.js"></script>
 <script src="/assets/js/p5library/p5.clickable.js"></script>
 
 <script>
-let button;
 let robot;
 let prey;
 let obstacle;
 let canvas;
 let w = 800;
 let h = 600;
+let dGain = 0.002;
+let pGain = 0.08;
 var just_restarted = false;
 var setup_complete;
 var robot_setup = true;
 var prey_setup = false;
 var obstacle_setup = false;
+var bool_bearing = false;
+var bool_speedy = false;
+var bool_proportional = false;
+var bool_sinusoidal = false;
+var caught = false;
+var bool_counting = false;
+var time = 0;
 
 function setup() {
+	let buttonLength = 120;
+	let buttonHeight = 35;
   canvas = createCanvas(w, h);
   canvas.parent('sketch-holder');
-	resetSketch();
-
+	
 	myButton = new Clickable();     //Create button
 	myButton.text = "Reset";
-	myButton.locate(w-90, 10);        //Position Button
-	myButton.width = 80;
-	myButton.height = 35;
+	myButton.locate(w-buttonLength - 15, 10);        //Position Button
+	myButton.width = buttonLength;
+	myButton.height = buttonHeight;
 	myButton.onPress = function(){  //When myButton is pressed
 	  //this.color = "#AAAAFF";       //Change button color
 	  resetSketch();                //Show an alert message
 	}
 
+	constantButton = new Clickable();
+	constantButton.text = "C. Bearing"
+	constantButton.locate(w-buttonLength - 15, 55);
+	constantButton.width = buttonLength;
+	constantButton.height = buttonHeight;
+	constantButton.onPress = function(){
+		constantBearing();
+	}
+
+	proportionalButton = new Clickable();
+	proportionalButton.text = "Proportional"
+	proportionalButton.locate(w-buttonLength - 15, 100);
+	proportionalButton.width = buttonLength;
+	proportionalButton.height = buttonHeight;
+	proportionalButton.onPress = function(){
+		proportional();
+	}
+
+	fastButton = new Clickable();
+	fastButton.text = "Fast prey"
+	fastButton.locate(w-buttonLength - 15, 145);
+	fastButton.width = buttonLength;
+	fastButton.height = buttonHeight;
+	fastButton.onPress = function(){
+		makeFast();
+	}
+
+
+	sinusoidalButton = new Clickable();
+	sinusoidalButton.text = "Sinusoidal Prey"
+	sinusoidalButton.locate(w-buttonLength - 15, 190);
+	sinusoidalButton.width = buttonLength;
+	sinusoidalButton.height = buttonHeight;
+	sinusoidalButton.onPress = function(){
+		activateSinusoid();
+	}
+
+	resetSketch();
+
 }
 
 function draw() {
   background(235);
+
+  // Display buttons
   push();
   myButton.draw();
+  constantButton.draw();
+  fastButton.draw();
+  proportionalButton.draw();
+  sinusoidalButton.draw();
   pop();
   //Display the button
  
 
   if(setup_complete == false){
+  	time = 0;
     position_stuff();
   } else {
+
+  	if(caught == false){
+  		time += + 1/30;
+  	}
+  	fill(0);
+  	if (time > 10){
+  		var message = ['Time to capture = ', nf(time,2,2), 's'];
+  	} else {
+  		var message = ['Time to capture = ', nf(time,1,2), 's'];
+  	}
+  	
+  	text(join(message, ''), 10, 30);
+  	print(join(message, ''));
+
     // Set angle of prey
     targetAngle = getAngle();
     obstacleAngle = getObstacleAngle();
@@ -73,18 +145,19 @@ function draw() {
     
     tipX = robot.xpos + (robot.len/2)*cos(robot.angle);
     tipY = robot.ypos + (robot.len/2)*sin(robot.angle);
-    if ( distance(tipX, tipY, prey.xpos, prey.ypos) < prey.radius - 10) {
+
+    // Check if caught
+    if ( distance(tipX, tipY, prey.xpos, prey.ypos) < prey.radius) {
+    	caught = true;
       robot.speed = 0;
       prey.yspeed = 0;
       prey.xspeed = 0;
     }
-    
   }
-  
-  
 }
 
 function resetSketch(){
+	caught = false;
 	robot_setup = true;
 	prey_setup = false;
 	obstacle_setup = false;
@@ -94,9 +167,73 @@ function resetSketch(){
 	setup_complete = false;
 	just_restarted = true;
 
+	
 	robot = new Robot(mouseX, mouseY);
 	robot.speed = 0;
 
+	if (bool_bearing){
+		robot.constantBearing = -PI/10;
+	} else {
+		robot.constantBearing = 0;
+	}
+}
+
+function constantBearing(){
+	if (bool_bearing){
+		robot.constantBearing = 0;
+		constantButton.color = "#FFFFFF";
+		bool_bearing = false;
+	} else {
+		robot.constantBearing = -PI/10;
+		constantButton.color = "#A3A3FF";
+		bool_bearing = true;
+	}
+}
+
+function makeFast(){
+	if(caught == false){
+		if (bool_speedy){
+			prey.xspeed = 3;
+			fastButton.color = "#FFFFFF";
+			bool_speedy = false;
+		} else {
+			prey.xspeed = 4;
+			fastButton.color = "#A3A3FF";
+			bool_speedy = true;
+		} 
+	} else {
+		if (bool_speedy){
+			fastButton.color = "#FFFFFF";
+			bool_speedy = false;
+		} else {
+			fastButton.color = "#A3A3FF";
+			bool_speedy = true;
+		} 
+	}
+}
+
+function proportional(){
+	if (bool_proportional){
+		robot.controller = new PID_controller(pGain, dGain, 0);
+		proportionalButton.color = "#FFFFFF";
+		bool_proportional = false;
+	} else {
+		robot.controller = new PID_controller(0, dGain, 0);
+		proportionalButton.color = "#A3A3FF";
+		bool_proportional = true;
+	} 
+}
+
+function activateSinusoid(){
+	if (bool_sinusoidal){
+		prey.yspeed = 0;
+		sinusoidalButton.color = "#FFFFFF";
+		bool_sinusoidal = false;
+	} else {
+		prey.yspeed = 3;
+		sinusoidalButton.color = "#A3A3FF";
+		bool_sinusoidal = true;
+	} 
 }
 
 function distance(x1, y1, x2, y2){
@@ -172,23 +309,30 @@ function getDistance(object){
 function position_stuff(){
   
   textSize(32);
+  noStroke();
   fill(0, 102, 153);
   
   if(robot_setup){
+  	noStroke();
+  	fill(0, 102, 153);
     text('Place robot by clicking with the mouse', 10, 30);
     robot.show();
     robot.xpos = mouseX;
     robot.ypos = mouseY;
     } 
   else if(prey_setup){
+  	noStroke();
+  	fill(0, 102, 153);
     text('Place prey by clicking with the mouse', 10, 30);
-  robot.show();
+  	robot.show();
     prey.show();
     prey.xpos = mouseX;
     prey.ypos = mouseY;
   } 
   
   else if (obstacle_setup){
+  	noStroke();
+  	fill(0, 102, 153);
     text('Place obstacle by clicking with the mouse', 10, 30);
     prey.show();
     robot.show();
@@ -227,7 +371,26 @@ function mouseReleased(){
 	    //text('Place obstacle by clicking with the mouse', 10, 30);
 	    obstacle_setup = false;
 	    setup_complete = true;
-	    prey.xspeed = 1.5;
+
+	    //Set prey speed accordingly
+	    if(bool_speedy){
+	    	prey.xspeed = 4;
+	    } else {
+	    	prey.xspeed = 3;
+	    }
+
+	    if(bool_sinusoidal){
+	    	prey.yspeed = 3;
+	    } else {
+	    	prey.yspeed = 0;
+	    }
+
+	    //set robot PID accordingly
+	    if (bool_proportional){
+	    	robot.controller = new PID_controller(0,dGain,0);
+	    } else {
+	    	robot.controller = new PID_controller(pGain,dGain,0);
+	    }
 	    robot.speed = 5.0;
 	  }
 	}
@@ -277,11 +440,11 @@ class PID_controller{
 class Prey{
   
   constructor(xpos, ypos){
-   this.radius = 50;
+   this.radius = 40;
    this.xpos = xpos;
    this.ypos = ypos;
-   this.yspeed = 3;
-   this.xspeed = 2.7;
+   this.yspeed = 0;
+   this.xspeed = 2;
    this.angle = 0;
   }
   
@@ -310,8 +473,8 @@ class Prey{
 class Robot{
   
   constructor(xpos, ypos){
-   this.controller = new PID_controller(0.08, 0.0, 0.0);
-   this.angle = 0;
+   this.controller = new PID_controller(pGain, 0.0, 0.0);
+   this.angle = PI/2;
    this.wid = 30;
    this.len = 40;
    this.rotation = 0;
@@ -319,8 +482,9 @@ class Robot{
    this.yspeed = 0;
    this.xpos = xpos;
    this.ypos = ypos;
-   this.speed = 3;
+   this.speed = 0;
    this.thresholdDist = 120;
+   this.constantBearing = 0;
   } 
   
   show(){
@@ -353,12 +517,12 @@ class Robot{
       } else if (obstacleAngle >= 0){
         obstacleAngle = 10 + obstacleAngle;
       }
-      var rotation = this.controller.update(w1*targetAngle + w2*(-obstacleAngle));
+      var rotation = this.controller.update(w1*(targetAngle  + this.constantBearing) + w2*(-obstacleAngle) );
       this.rotation = rotation;
       this.angle += this.rotation;
       
     } else {
-      var rotation = this.controller.update(targetAngle);
+      var rotation = this.controller.update(targetAngle + this.constantBearing);
       this.rotation = rotation;
       this.angle += this.rotation;
      
