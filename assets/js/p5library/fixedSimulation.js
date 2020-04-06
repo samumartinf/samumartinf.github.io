@@ -2,13 +2,13 @@ let robot;
 let prey;
 let obstacle;
 let canvas;
-let w = 990;
-let h = 600;
+let w = 1050;
+let h = 750;
 let dGain = 0.002;
-let pGain = 0.08;
+let pGain = 0.2;
 let iGain = 0.001;
 var just_restarted = false;
-var setup_complete;
+var setup_complete = true;
 var robot_setup = true;
 var prey_setup = false;
 var obstacle_setup = false;
@@ -16,17 +16,20 @@ var bool_bearing = false;
 var bool_speedy = false;
 var bool_proportional = false;
 var bool_sinusoidal = false;
+var bool_fixed = true;
 var caught = false;
 var bool_counting = false;
 var time = 0;
 
-var robot_speed = 100;
+var slowSpeed = 7;
+var fastSpeed = 9;
 
 function setup() {
+  textSize(32);
 	let buttonLength = 120;
 	let buttonHeight = 35;
   canvas = createCanvas(w, h);
-  canvas.parent('sketch-holder');
+  canvas.parent('sketch-holder2');
 	
 	myButton = new Clickable();     //Create button
 	myButton.text = "Reset";
@@ -74,6 +77,25 @@ function setup() {
 		activateSinusoid();
 	}
 
+  playButton = new Clickable();
+  playButton.text = "Play"
+  playButton.locate(w-buttonLength - 15, h-50);
+  playButton.width = buttonLength;
+  playButton.height = buttonHeight;
+  playButton.onPress = function(){
+    play();
+  }
+
+  fixedButton = new Clickable();
+  fixedButton.text = "Fixed Init"
+  fixedButton.locate(w-buttonLength - 15, h-95);
+  fixedButton.width = buttonLength;
+  fixedButton.height = buttonHeight;
+  fixedButton.color = "#A3A3FF"
+  fixedButton.onPress = function(){
+    fixedSetup();
+  }
+
 	resetSketch();
 
 }
@@ -88,6 +110,8 @@ function draw() {
   fastButton.draw();
   proportionalButton.draw();
   sinusoidalButton.draw();
+  playButton.draw();
+  fixedButton.draw();
   pop();
   //Display the button
  
@@ -97,10 +121,11 @@ function draw() {
     position_stuff();
   } else {
 
-  	if(caught == false){
+  	if(caught == false && bool_counting){
   		time += + 1/30;
   	}
   	fill(0);
+    textSize(32);
   	if (time > 10){
   		var message = ['Time to capture = ', nf(time,2,2), 's'];
   	} else {
@@ -137,24 +162,24 @@ function draw() {
 
 function resetSketch(){
 	caught = false;
-	robot_setup = true;
-	prey_setup = false;
-	obstacle_setup = false;
+  bool_counting = false;
 	prey = new Prey();
 	obstacle = new Obstacle();
 	frameRate(30);
 	setup_complete = false;
 	just_restarted = true;
+  time = 0;
 
-	
-	robot = new Robot(mouseX, mouseY);
-	robot.speed = 0;
-
-	if (bool_bearing){
-		robot.constantBearing = -PI/10;
-	} else {
-		robot.constantBearing = 0;
-	}
+  if(bool_fixed){
+    other_position_stuff();
+    setup_complete = true;
+  } else {
+    robot_setup = true;
+    prey_setup = false;
+    obstacle_setup = false;
+    robot = new Robot(mouseX, mouseY);
+    robot.speed = 0;
+  }
 }
 
 function constantBearing(){
@@ -163,7 +188,7 @@ function constantBearing(){
 		constantButton.color = "#FFFFFF";
 		bool_bearing = false;
 	} else {
-		robot.constantBearing = -PI/10;
+		robot.constantBearing = PI/10;
 		constantButton.color = "#A3A3FF";
 		bool_bearing = true;
 	}
@@ -172,11 +197,11 @@ function constantBearing(){
 function makeFast(){
 	if(caught == false){
 		if (bool_speedy){
-			prey.xspeed = 3;
+			prey.xspeed = slowSpeed;
 			fastButton.color = "#FFFFFF";
 			bool_speedy = false;
 		} else {
-			prey.xspeed = 4;
+			prey.xspeed = fastSpeed;
 			fastButton.color = "#A3A3FF";
 			bool_speedy = true;
 		} 
@@ -193,7 +218,7 @@ function makeFast(){
 
 function proportional(){
 	if (bool_proportional){
-		robot.controller = new PID_controller(pGain, dGain, 0);
+		robot.controller = new PID_controller(pGain, 0, iGain);
 		proportionalButton.color = "#FFFFFF";
 		bool_proportional = false;
 	} else {
@@ -213,6 +238,45 @@ function activateSinusoid(){
 		sinusoidalButton.color = "#A3A3FF";
 		bool_sinusoidal = true;
 	} 
+}
+
+function play(){
+  //Set prey speed accordingly
+  if(bool_speedy){
+    prey.xspeed = fastSpeed;
+  } else {
+    prey.xspeed = slowSpeed;
+  }
+
+  //Set prey's trajectory
+  if(bool_sinusoidal){
+    prey.yspeed = 3;
+  } else {
+    prey.yspeed = 0;
+  }
+  //set robot PID accordingly
+  if (bool_proportional){
+    robot.controller = new PID_controller(0,dGain,0);
+  } else {
+    robot.controller = new PID_controller(pGain,0,iGain);
+  }
+
+  if (bool_bearing){
+    robot.constantBearing = PI/10;
+  }
+
+  robot.speed = 10.0;
+  bool_counting = true;
+}
+
+function fixedSetup(){
+  if (bool_fixed){
+    fixedButton.color = "#FFFFFF";
+    bool_fixed = false;
+  } else {
+    fixedButton.color = "#A3A3FF";
+    bool_fixed = true;
+  } 
 }
 
 function distance(x1, y1, x2, y2){
@@ -285,6 +349,15 @@ function getDistance(object){
   return dist;
 }
 
+function other_position_stuff(){
+  robot = new Robot(240, 550);
+  prey = new Prey(60, 190); 
+  robot.speed = 0;
+  robot.controller = new PID_controller(0,0,0);
+  prey.xspeed = 0;
+  obstacle = new Obstacle(2000,1000);
+}
+
 function position_stuff(){
   
   textSize(32);
@@ -298,6 +371,7 @@ function position_stuff(){
     robot.show();
     robot.xpos = mouseX;
     robot.ypos = mouseY;
+    robot.controller = new PID_controller(0,0,0);
     } 
   else if(prey_setup){
   	noStroke();
@@ -324,54 +398,36 @@ function position_stuff(){
 
 function mouseReleased(){
 	if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
-		if (just_restarted){
-			just_restarted = false;
-		}
-		else if (robot_setup){
-	    //text('Place robot by clicking with the mouse', 10, 30);
-	    robot_setup = false;
-	    prey_setup = true; 
-	    prey = new Prey(mouseX, mouseY);
-	    prey.xspeed = 0;
-	  } 
+		if(setup_complete == false){
+      if (just_restarted){
+        just_restarted = false;
+      }
+      else if (robot_setup){
+        //text('Place robot by clicking with the mouse', 10, 30);
+        robot_setup = false;
+        prey_setup = true; 
+        prey = new Prey(mouseX, mouseY);
+        prey.xspeed = 0;
+      } 
 
-	  else if(prey_setup){
-	    //text('Place prey by clicking with the mouse', 10, 30);
-	    
-	    prey_setup = false;
-	    obstacle_setup = true;
-	    obstacle = new Obstacle(mouseX, mouseY);
-	  } 
-	  
-	  else if (obstacle_setup){
-	    prey.show();
-	    robot.show();
-	    
-	    //text('Place obstacle by clicking with the mouse', 10, 30);
-	    obstacle_setup = false;
-	    setup_complete = true;
+      else if(prey_setup){
+        //text('Place prey by clicking with the mouse', 10, 30);
+        
+        prey_setup = false;
+        obstacle_setup = true;
+        obstacle = new Obstacle(mouseX, mouseY);
+      } 
+      
+      else if (obstacle_setup){
+        prey.show();
+        robot.show();
+        
+        //text('Place obstacle by clicking with the mouse', 10, 30);
+        obstacle_setup = false;
+        setup_complete = true;
+      }
+    }
 
-	    //Set prey speed accordingly
-	    if(bool_speedy){
-	    	prey.xspeed = 4;
-	    } else {
-	    	prey.xspeed = 3;
-	    }
-
-	    if(bool_sinusoidal){
-	    	prey.yspeed = 3;
-	    } else {
-	    	prey.yspeed = 0;
-	    }
-
-	    //set robot PID accordingly
-	    if (bool_proportional){
-	    	robot.controller = new PID_controller(0,dGain,0);
-	    } else {
-	    	robot.controller = new PID_controller(pGain,dGain,0);
-	    }
-	    robot.speed = 5.0;
-	  }
 	}
  
 }
@@ -423,7 +479,7 @@ class Prey{
    this.xpos = xpos;
    this.ypos = ypos;
    this.yspeed = 0;
-   this.xspeed = 2;
+   this.xspeed = 0;
    this.angle = 0;
   }
   
@@ -452,8 +508,8 @@ class Prey{
 class Robot{
   
   constructor(xpos, ypos){
-   this.controller = new PID_controller(pGain, 0.0, 0.0);
-   this.angle = PI/2;
+   this.controller = new PID_controller(0, 0.0, 0.0);
+   this.angle = -PI/2;
    this.wid = 30;
    this.len = 40;
    this.rotation = 0;
