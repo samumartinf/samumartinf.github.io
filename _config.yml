@@ -109,7 +109,7 @@ analytics:
 author:
   name             : "Samuel Martin Frias"
   avatar           : "/assets/images/snowandme.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Final year ICL student with iterest in mathematical modelling, finance and healthcare"
+  bio              : "Final year ICL student with interest in mathematical modelling, finance and healthcare"
   location         : "London, GB"
   email            : "samumartinfrias@gmail.com"
   links:
