@@ -146,12 +146,13 @@ function draw() {
     prey.show();
     prey.update();
     obstacle.show();
-    
-    tipX = robot.xpos + (robot.len/2)*cos(robot.angle);
-    tipY = robot.ypos + (robot.len/2)*sin(robot.angle);
+
+   
+    tipX = robot.xpos;// + (robot.len/2 + 10)*cos(robot.angle);
+    tipY = robot.ypos;// + (robot.len/2 + 10)*sin(robot.angle);
 
     // Check if caught
-    if ( distance(tipX, tipY, prey.xpos, prey.ypos) < prey.radius) {
+    if ( distance(tipX, tipY, prey.xpos, prey.ypos) < prey.radius + robot.len/2) {
     	caught = true;
       robot.speed = 0;
       prey.yspeed = 0;
@@ -195,7 +196,7 @@ function constantBearing(){
 }
 
 function makeFast(){
-	if(caught == false){
+	if(caught == false && bool_counting == true){
 		if (bool_speedy){
 			prey.xspeed = slowSpeed;
 			fastButton.color = "#FFFFFF";
@@ -234,7 +235,7 @@ function activateSinusoid(){
 		sinusoidalButton.color = "#FFFFFF";
 		bool_sinusoidal = false;
 	} else {
-		prey.yspeed = 3;
+		prey.yspeed = 6;
 		sinusoidalButton.color = "#A3A3FF";
 		bool_sinusoidal = true;
 	} 
@@ -250,7 +251,7 @@ function play(){
 
   //Set prey's trajectory
   if(bool_sinusoidal){
-    prey.yspeed = 3;
+    prey.yspeed = 6;
   } else {
     prey.yspeed = 0;
   }
@@ -266,6 +267,7 @@ function play(){
   }
 
   robot.speed = 10.0;
+  prey.angle = 90;
   bool_counting = true;
 }
 
