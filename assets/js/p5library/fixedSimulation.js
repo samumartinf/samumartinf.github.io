@@ -17,12 +17,14 @@ var bool_speedy = false;
 var bool_proportional = false;
 var bool_sinusoidal = false;
 var bool_fixed = true;
+var bool_parallel = false;
 var caught = false;
 var bool_counting = false;
 var time = 0;
 
-var slowSpeed = 7;
-var fastSpeed = 9;
+var robotSpeed = 7;
+var slowSpeed = 5;
+var fastSpeed = 7;
 
 function setup() {
   textSize(32);
@@ -96,6 +98,15 @@ function setup() {
     fixedSetup();
   }
 
+  parallelButton = new Clickable();
+  parallelButton.text = "Parallel Nav"
+  parallelButton.locate(w-buttonLength-15, 235);
+  parallelButton.width = buttonLength;
+  parallelButton.height = buttonHeight;
+  parallelButton.onPress = function(){
+    parallelNavigation();
+  }
+
 	resetSketch();
 
 }
@@ -112,6 +123,7 @@ function draw() {
   sinusoidalButton.draw();
   playButton.draw();
   fixedButton.draw();
+  parallelButton.draw();
   pop();
   //Display the button
  
@@ -139,7 +151,8 @@ function draw() {
     targetAngle = getAngle();
     obstacleAngle = getObstacleAngle();
     obstacleDist = getDistance(obstacle);
-    robot.update(targetAngle, obstacleAngle, obstacleDist);
+    targetDist = getDistance(prey);
+    robot.update(targetAngle, obstacleAngle, obstacleDist, targetDist);
     robot.moveForward();
     robot.show();
     
@@ -184,7 +197,12 @@ function resetSketch(){
 }
 
 function constantBearing(){
-	if (bool_bearing){
+  if (bool_parallel){
+    robot.constantBearing = 0;
+    parallelButton.color = "#FFFFFF";
+    bool_parallel = false;
+  }
+  if (bool_bearing){
 		robot.constantBearing = 0;
 		constantButton.color = "#FFFFFF";
 		bool_bearing = false;
@@ -193,6 +211,22 @@ function constantBearing(){
 		constantButton.color = "#A3A3FF";
 		bool_bearing = true;
 	}
+}
+
+function parallelNavigation(){
+	if (bool_bearing){
+		constantButton.color = "#FFFFFF";
+		bool_bearing = false;
+  }
+  if(bool_parallel){
+		robot.constantBearing = 0;
+		parallelButton.color = "#FFFFFFF";
+		bool_parallel = false;
+	}else {
+    robot.constantBearing = PI/3;
+    parallelButton.color = "#A3A3FF"
+    bool_parallel = true;
+  }
 }
 
 function makeFast(){
@@ -219,7 +253,7 @@ function makeFast(){
 
 function proportional(){
 	if (bool_proportional){
-		robot.controller = new PID_controller(pGain, 0, iGain);
+		robot.controller = new PID_controller(pGain, dGain, iGain);
 		proportionalButton.color = "#FFFFFF";
 		bool_proportional = false;
 	} else {
@@ -235,7 +269,7 @@ function activateSinusoid(){
 		sinusoidalButton.color = "#FFFFFF";
 		bool_sinusoidal = false;
 	} else {
-		prey.yspeed = 6;
+		prey.yspeed = 5;
 		sinusoidalButton.color = "#A3A3FF";
 		bool_sinusoidal = true;
 	} 
@@ -251,7 +285,7 @@ function play(){
 
   //Set prey's trajectory
   if(bool_sinusoidal){
-    prey.yspeed = 6;
+    prey.yspeed = 5;
   } else {
     prey.yspeed = 0;
   }
@@ -259,14 +293,18 @@ function play(){
   if (bool_proportional){
     robot.controller = new PID_controller(0,dGain,0);
   } else {
-    robot.controller = new PID_controller(pGain,0,iGain);
+    robot.controller = new PID_controller(pGain,dGain,iGain);
   }
 
   if (bool_bearing){
     robot.constantBearing = PI/10;
   }
 
-  robot.speed = 10.0;
+  if (bool_parallel){
+    robot.constantBearing = PI/3;
+  }
+
+  robot.speed = robotSpeed;
   prey.angle = 90;
   bool_counting = true;
 }
@@ -494,7 +532,7 @@ class Prey{
   update(){
     this.angle += 1;
     this.xpos += this.xspeed;
-    this.ypos +=this.yspeed*sin(this.angle/10);
+    this.ypos += this.yspeed*sin(this.angle/10);
   }
   
   setSpeed(x,y){
@@ -541,13 +579,10 @@ class Robot{
     pop();
   }
   
-  update(targetAngle, obstacleAngle, obstacleDist){
+  update(targetAngle, obstacleAngle, obstacleDist, targetDist){
     if(obstacleDist < this.thresholdDist && abs(obstacleAngle) < (this.thresholdDist/(obstacleDist + 30) * PI/6)){
       var w1 = (this.thresholdDist)/(this.thresholdDist + (this.thresholdDist-obstacleDist));
       var w2 = (this.thresholdDist - obstacleDist)/(this.thresholdDist + (this.thresholdDist-obstacleDist));
-
-      //w1 = (PI/6)/(abs(obstacleAngle) + PI/6);
-     // w2 = abs(obstacleAngle)/(PI/6 + abs(obstacleAngle));
       
       if(obstacleAngle < 0){
         obstacleAngle = -10 + obstacleAngle;
@@ -559,9 +594,19 @@ class Robot{
       this.angle += this.rotation;
       
     } else {
-      var rotation = this.controller.update(targetAngle + this.constantBearing);
-      this.rotation = rotation;
-      this.angle += this.rotation;
+      if(bool_parallel){
+        targetDist = targetDist/100;
+        var alpha = (targetDist*targetDist)/(1 + targetDist*targetDist);  
+        var message = ['Alpha =', nf(alpha,1,2), 's'];
+        print(join(message, ''));
+        var rotation = this.controller.update(targetAngle + alpha*this.constantBearing)
+        this.rotation = rotation;
+        this.angle += this.rotation;
+      }else{
+        var rotation = this.controller.update(targetAngle + this.constantBearing);
+        this.rotation = rotation;
+        this.angle += this.rotation;
+      }
      
     }
     

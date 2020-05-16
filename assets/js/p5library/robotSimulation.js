@@ -151,7 +151,7 @@ function resetSketch(){
 	robot.speed = 0;
 
 	if (bool_bearing){
-		robot.constantBearing = -PI/10;
+		robot.constantBearing = -PI/2;
 	} else {
 		robot.constantBearing = 0;
 	}
@@ -163,7 +163,7 @@ function constantBearing(){
 		constantButton.color = "#FFFFFF";
 		bool_bearing = false;
 	} else {
-		robot.constantBearing = -PI/10;
+		robot.constantBearing = -PI/2;
 		constantButton.color = "#A3A3FF";
 		bool_bearing = true;
 	}
