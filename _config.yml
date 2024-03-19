@@ -12,15 +12,15 @@
 
 theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "contrast" #"air", "default", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "dark" #"air", "default", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-GB"
 title                    : "Samuel Martin Frias"
 title_separator          : "|"
-subtitle                 : "A personal website"
+subtitle                 : ""
 name                     : "Samuel Martin Frias"
-description              : "Personal website"
+description              : "Bad opinions are my own"
 url                      : "https://samumartinf.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "samumartinf/samumartinf.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -39,7 +39,7 @@ comments:
     # https://developers.facebook.com/docs/plugins/comments
     appid                :
     num_posts            : # 5 (default)
-    colorscheme          : # "light" (default), "dark"
+    colorscheme          : "dark" # "light" (default), "dark"
   utterances:
     theme                : # "github-light" (default), "github-dark"
     issue_term           : # "pathname" (default)
@@ -108,8 +108,8 @@ analytics:
 # Site Author
 author:
   name             : "Samuel Martin Frias"
-  avatar           : "/assets/images/snowandme.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Final year ICL student with interest in mathematical modelling, finance and healthcare"
+  avatar           : "/assets/images/profile.jpeg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  bio              : "Curiosity-driven engineer and researcher"
   location         : "London, GB"
   email            : "samumartinfrias@gmail.com"
   links:

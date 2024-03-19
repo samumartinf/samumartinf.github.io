@@ -11,12 +11,12 @@
   </rdf:RDF>
  </metadata>
  <g transform="translate(0,-177)">
-  <g fill="#000000" letter-spacing="0px" word-spacing="0px">
+  <g fill="#dddddd" letter-spacing="0px" word-spacing="0px">
    <text transform="scale(1.0171 .98317)" x="230.21526" y="109.3651" font-family="'Imprint MT Shadow'" font-size="32.113px" stroke-width=".37633" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="230.21526" y="109.3651" font-family="'Imprint MT Shadow'" font-size="32.113px" stroke-width=".37633" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal">SMF</tspan></text>
    <text transform="scale(1.0625 .94117)" x="24.77158" y="277.0878" font-family="'Times New Roman'" font-size="73.958px" stroke-width=".86669" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="24.77158" y="277.0878" font-family="'Times New Roman'" font-size="73.958px" stroke-width=".86669" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal">SMF</tspan></text>
    <text transform="scale(1.115 .89684)" x="210.03745" y="161.24034" font-family="Cambria" font-size="35.061px" stroke-width=".41087" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25" xml:space="preserve"><tspan x="210.03745" y="161.24034" font-family="Cambria" font-size="35.061px" stroke-width=".41087" style="font-feature-settings:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal">SMF</tspan></text>
   </g>
-  <g fill="none" stroke="#000" stroke-linecap="square" stroke-linejoin="round">
+  <g fill="none" stroke="#ddd" stroke-linecap="square" stroke-linejoin="round">
    <rect x="229.01" y="117.69" width="83.533" height="32.884" stroke-width="2.6"/>
    <rect x="13.409" y="202.42" width="184.79" height="70.638" stroke-width="5.6677"/>
    <rect x="229.11" y="80.19" width="83.533" height="32.884" stroke-width="2.6"/>
