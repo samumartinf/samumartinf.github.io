@@ -3,7 +3,7 @@ cache: bundler
 gemfile: docs/Gemfile
 script:
   - bundle install
-  - bundle exec jekyll algolia --source docs --destination docs/_site --config docs/_config.yml
+  - bundle exec jekyll 
 branches:
   only:
     # Change this to gh-pages if you're deploying using the gh-pages branch
