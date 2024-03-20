@@ -129,6 +129,9 @@ author:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/samuelmartinfrias/"
+    - label: "CV"
+      icon: "fas fa-fw fa-file"
+      url: "assets/documents/Samuel-Martin-CV-2023.pdf"
 
 # Site Footer
 footer:

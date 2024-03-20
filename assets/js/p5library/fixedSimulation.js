@@ -2,7 +2,7 @@ let robot;
 let prey;
 let obstacle;
 let canvas;
-let w = 1050;
+let w = 900;
 let h = 750;
 let dGain = 0.002;
 let pGain = 0.2;
