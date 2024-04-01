@@ -7,7 +7,7 @@ header:
 author_profile: true
 ---
 
-This project was the result of my Master's thesis. It provides a framework for model identification in analytical form. Providing the user with a fully human understandable ODE describing the system.
+This project was the result of my Master's thesis. It provides a framework for model identification in analytical form. It uses statistical methods for estimating the ODE system. By the end, it provides the user with a fully human understandable ODE describing the system.
 
 # Project Overview
 
