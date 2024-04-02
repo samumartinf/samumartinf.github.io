@@ -109,7 +109,7 @@ author:
   avatar           : "/assets/images/profile.jpeg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "Curiosity-driven engineer and researcher"
   location         : "London, GB"
-  email            : "samumartinfrias@gmail.com"
+  email            : "samu + surname 1 + surname 2 + @gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
@@ -145,6 +145,9 @@ footer:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/samuelmartinfrias/"
+    - label: "CV"
+      icon: "fas fa-fw fa-file"
+      url: "assets/documents/Samuel-Martin-CV-2024.pdf"
 
 
 # Reading Files
